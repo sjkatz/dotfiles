@@ -29,7 +29,6 @@ import XMonad.Layout.ResizableTile
 import XMonad.Layout.LayoutHints
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Grid
-import XMonad.Layout.ToggleLayouts
 
 import Data.Ratio ((%))
 
@@ -37,41 +36,36 @@ import Data.String.UTF8
  
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
+import Control.Monad (liftM2)
 
 -- Start config
 
 -- Dzen/conky for bars
-myXmonadBar = "dzen2 -x '0' -y '0' -h '24' -w '920' -ta '1' -fg '#FFFFFF' -bg '#1B1D1E' -fn 'Bitstream Vera Mono-10'"
-myStatusBar = "conky -c /home/ross/.xmonad/.conky_dzen | dzen2 -x '770' -w '1000' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' -y '0' -fn 'Bitstream Vera Mono-10'"
+{-- 
+myXmonadBar = "dzen2 -x '0' -y '0' -h '24' -w '920' -ta '1' -fg '#FFFFFF' -bg '#1B1D1E' -fn 'Bitstream Vera Mono-9'"
+myStatusBar = "conky -c /home/ross/.xmonad/.conky_dzen | dzen2 -x '770' -w '1000' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' -y '0' -fn 'Bitstream Vera Mono-9'"
 myBitmapsDir = "/home/ross/.xmonad/dzen2"
 
+
 --Workspace names
-myWorkspaces :: [WorkspaceId]
-myWorkspaces = clickable . (map dzenEscape) $ ["1:main", "2:web", "3:vim", "4:chat", "5:music", "6:other", "7:shed", "8:theatre", "9:cinema"]
+myWorkspaces :: [String]
+myWorkspaces = clickable . (map dzenEscape) $ ["1:main", "2:web", "3:vim", "4:chat", "5:music", "6:other", "7:shed", "8:theatre"]
   where clickable l     = [ "^ca(1,xdotool key super+" ++ show (n) ++ ")" ++ ws ++ "^ca()" |
                             (i,ws) <- zip [1..] l,
-                            let n = i ]
-
--- Set workspace names
-mainWs      = (myWorkspaces !! 0)
-webWs      = (myWorkspaces !! 1)
-vimWs       = (myWorkspaces !! 2)
-chatWs     = (myWorkspaces !! 3)
-musicWs     = (myWorkspaces !! 4)
-otherWs     = (myWorkspaces !! 5)
-shedWs      = (myWorkspaces !! 6)
-theatreWs   = (myWorkspaces !! 7)
-cinemaWs    = (myWorkspaces !! 8)
+                           let n = i ]
+--} 
+myWorkspaces :: [String]
+myWorkspaces = ["1:main", "2:web", "3:vim", "4:chat", "5:music", "6:other", "7:shed", "8:theatre", "9:crap"]
 
 -- Set border colours
-myFocusedBorderColor = "#33cc33"
-myNormalBorderColor = "m#00cd00"
+--myFocusedBorderColor = "#aaffaa"
+--myNormalBorderColor = "m#00cd00"
+myNormalBorderColor  = "#333333"
+myFocusedBorderColor = "#DD4814"
 
 myBorderWidth     = 2
-
+{-- 
 main = do
-    dzenLeftBar <- spawnPipe myXmonadBar
-    dzenRightBar <- spawnPipe myStatusBar
     xmonad $ defaultConfig
         { manageHook = manageHook' 
 --        , layoutHook = avoidStruts $ layoutHook defaultConfig
@@ -90,35 +84,54 @@ main = do
         [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
-        , ((0                   , 0x1008FF11), spawn "amixer set Master 2-")
-        , ((0                   , 0x1008FF13), spawn "amixer set Master 2+")
-        , ((mod4Mask            , xK_Down),    swapNextScreen)
-        , ((mod4Mask            , xK_f),        sendMessage ToggleLayout)
+        , ((0                     , 0x1008FF11), spawn "amixer set Master 2-")
+        , ((0                     , 0x1008FF13), spawn "amixer set Master 2+")
         ]
+--} 
+-- Run xmonad with the specified conifguration
+main = xmonad myConfig
 
+-- Use the gnomeConfig, but change a couple things
+myConfig = gnomeConfig {
+	manageHook = manageHook' 
+	, layoutHook = layoutHook'
+	, workspaces  = myWorkspaces
+	, normalBorderColor  = myNormalBorderColor
+	, focusedBorderColor = myFocusedBorderColor
+	, borderWidth        = myBorderWidth
+  , modMask = mod4Mask -- Bind mod to win key
+}`additionalKeysP` 
+    [
+    ("M-p", spawn "dmenu_run -b")
+  -- Logout
+    , ("M-S-q", spawn "gnome-session-quit") 
+  -- moving workspaces
+    , ("C-M-h",    prevWS )
+    , ("C-M-l",   nextWS )
+    , ("C-M-S-h",  shiftToPrev )
+    , ("C-M-S-l", shiftToNext )
+    ]
 
 -- Hooks {{{
 -- ManageHook {{{
 manageHook' :: ManageHook
 manageHook' = (composeAll . concat $
     [ [resource     =? r            --> doIgnore            |   r   <- myIgnores] -- ignore desktop
-    , [className    =? d            --> doShift  mainWs     |   d   <- myDev    ] -- move dev to main
-    , [className    =? w            --> doShift  webWs      |   w   <- myWebs   ] -- move webs to main
-    , [className    =? v            --> doShift  vimWs      |   v   <- myVim    ] -- move webs to main
-    , [className    =? c            --> doShift	 chatWs     |   c   <- myChat   ] -- move chat to chat
-    , [className    =? m            --> doShift  musicWs    |   m   <- myMusic  ] -- move music to music
-    , [className    =? o            --> doShift  otherWs    |   o   <- myOther  ] -- move img to div
-    , [className    =? s            --> doShift  shedWs     |   s   <- myShed   ] -- move img to div
-    , [className    =? t            --> doShift  theatreWs  |   t   <- myTheatre] -- move img to div
-    , [className    =? p            --> doShift  cinemaWs   |   p   <- myCinema ] -- move img to div
-    , [className    =? f            --> doCenterFloat       |   f   <- myFloats ] -- float my floats
+    , [className    =? c            --> viewShift  "1:main"   |   c   <- myDev    ] -- move dev to main
+    , [className    =? c            --> viewShift  "2:web"    |   c   <- myWebs   ] -- move webs to main
+    , [className    =? c            --> viewShift  "3:vim"    |   c   <- myVim    ] -- move webs to main
+    , [className    =? c            --> viewShift	 "4:chat"   |   c   <- myChat   ] -- move chat to chat
+    , [className    =? c            --> viewShift  "5:music"  |   c   <- myMusic  ] -- move music to music
+    , [className    =? c            --> viewShift  "6:other"  |   c   <- myOther  ] -- move img to div
+    , [className    =? c            --> viewShift  "7:shed"   |   c   <- myShed   ] -- move img to div
+    , [className    =? c            --> viewShift  "8:theatre"|   c   <- myTheatre] -- move img to div
+    , [className    =? c            --> doShift  "9:crap"|   c   <- myCrap] -- move img to div
+    , [className    =? c            --> doCenterFloat       |   c   <- myFloats ] -- float my floats
     , [name         =? n            --> doCenterFloat       |   n   <- myNames  ] -- float my names
     , [isFullscreen                 --> myDoFullFloat                           ]
     , [ manageDocks ]
     ]) 
- 
-  where
-
+ 		where			
         role      = stringProperty "WM_WINDOW_ROLE"
         name      = stringProperty "WM_NAME"
  
@@ -126,14 +139,14 @@ manageHook' = (composeAll . concat $
         myFloats  = ["Smplayer","MPlayer","VirtualBox","Xmessage","XFontSel","Downloads","Nm-connection-editor"]
         myWebs    = ["Firefox","Google-chrome","Chromium", "Chromium-browser"]
         myTheatre = ["Boxee","Trine"]
-        myCinema  = ["Vlc"]
         myMusic	  = ["Rhythmbox","Spotify"]
-        myChat	  = ["Pidgin","Buddy List"]
+        myChat	  = ["Pidgin","Buddy List","Empathy","Empathy-chat"]
         myOther	  = ["Gimp"]
         myShed    = []
-        myDev	  = ["gnome-terminal"]
-        myVim	  = ["gvim"] -- Spelt wrong on purpose
- 
+        myDev	  = ["Gnome-terminal"]
+        myVim	  = ["Gvim"]
+        myCrap = ["Update-manager"]
+
         -- resources
         myIgnores = ["desktop","desktop_window","notify-osd","stalonetray","trayer"]
  
@@ -143,46 +156,23 @@ manageHook' = (composeAll . concat $
 -- a trick for fullscreen but stil allow focusing of other WSs
 myDoFullFloat :: ManageHook
 myDoFullFloat = doF W.focusDown <+> doFullFloat
+
+viewShift = doF . liftM2 (.) W.greedyView W.shift
 -- }}}
 
--- Layout
-customLayout = smartBorders $ avoidStruts $ toggleLayouts Full  $ avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
-  where
-    tiled   = ResizableTall 1 (2/100) (1/2) []
- 
-customLayout2 = smartBorders $ avoidStruts $ toggleLayouts Full  $ avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat 
-  where
-    tiled   = ResizableTall 1 (2/100) (1/2) []
- 
-theatreLayout = fullscreenFull $ tiled ||| Mirror tiled ||| Full ||| simpleFloat 
-  where
-    tiled   = ResizableTall 1 (2/100) (1/2) []
- 
-cinemaLayout = noBorders $ Full ||| simpleFloat 
+layoutHook'  =  onWorkspaces ["1:main","5:music"] customLayout $ 
+                onWorkspaces ["6:other"] gimpLayout $ 
+                onWorkspaces ["4:chat"] imLayout $
+                customLayout2
 
-gimpLayout  = avoidStruts $ withIM (0.11) (Role "gimp-toolbox") $
-              reflectHoriz $
-              withIM (0.15) (Role "gimp-dock") Full
- 
-imLayout    = avoidStruts $ withIM (1%5) (And (ClassName "Pidgin") (Role "buddy_list")) Grid 
- --}}}
-
-layoutHook'  =  id
-                $ onWorkspaces [mainWs,musicWs] customLayout
-                $ onWorkspace otherWs gimpLayout  
-                $ onWorkspace chatWs imLayout 
-                $ onWorkspace theatreWs theatreLayout 
-                $ onWorkspace cinemaWs cinemaLayout 
-                $ customLayout2
-
+{-- 
 --Bar
 myLogHook :: Handle -> X ()
 myLogHook h = dynamicLogWithPP $ defaultPP
     {
-        ppCurrent           =   dzenColor "#a40e0e" "#5B5D5E" . pad . wrap "[ " " ]"
+        ppCurrent           =   dzenColor "#EE0404" "#4B4D4E" . pad . wrap "[" "]"
     --  , ppVisible           =   dzenColor "white" "#1B1D1E" . pad
---      , ppVisible           =   dzenColor "#ebac54" "#4B4D4E" . pad 
-      , ppVisible           =   dzenColor "#1212fc" "#5B5D5E" . pad 
+      , ppVisible           =   dzenColor "#0404EE" "#4B4D4E" . pad 
       , ppHidden            =   dzenColor "white" "#1B1D1E" . pad
       , ppHiddenNoWindows   =   dzenColor "#7b7b7b" "#1B1D1E" . pad
       , ppUrgent            =   dzenColor "#ff0000" "#1B1D1E" . pad
@@ -199,8 +189,21 @@ myLogHook h = dynamicLogWithPP $ defaultPP
       , ppTitle             =   (" " ++) . dzenColor "white" "#1B1D1E" . dzenEscape
       , ppOutput            =   hPutStrLn h
     }
- 
+ --}
 
+-- Layout
+customLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
+  where
+    tiled   = ResizableTall 1 (2/100) (1/2) []
+ 
+customLayout2 = avoidStruts $ Full ||| tiled ||| Mirror tiled ||| simpleFloat 
+  where
+    tiled   = ResizableTall 1 (2/100) (1/2) []
+ 
+gimpLayout  = avoidStruts $ withIM (0.11) (Role "gimp-toolbox") $
+              reflectHoriz $
+              withIM (0.15) (Role "gimp-dock") Full
+ 
+imLayout    = avoidStruts $ withIM (1%5) (And (ClassName "Empathy") (Role "empathy-chat")) Grid 
+ -- }}}
 
- 
- 
