@@ -110,7 +110,7 @@ fi
 # My add
 alias lock='gnome-screensaver-command --lock'
  
-alias dissertation_='cd /home/shaun/Documents/Documents/Work/Masters/dissertation/'
+alias dissertation_='cd /home/shaun/Documents/Work/Masters/dissertation/'
 
 ###
 # Shortcuts to access git
