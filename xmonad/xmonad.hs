@@ -40,54 +40,14 @@ import Control.Monad (liftM2)
 
 -- Start config
 
--- Dzen/conky for bars
-{-- 
-myXmonadBar = "dzen2 -x '0' -y '0' -h '24' -w '920' -ta '1' -fg '#FFFFFF' -bg '#1B1D1E' -fn 'Bitstream Vera Mono-9'"
-myStatusBar = "conky -c /home/ross/.xmonad/.conky_dzen | dzen2 -x '770' -w '1000' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' -y '0' -fn 'Bitstream Vera Mono-9'"
-myBitmapsDir = "/home/ross/.xmonad/dzen2"
-
-
---Workspace names
-myWorkspaces :: [String]
-myWorkspaces = clickable . (map dzenEscape) $ ["1:main", "2:web", "3:vim", "4:chat", "5:music", "6:other", "7:shed", "8:theatre"]
-  where clickable l     = [ "^ca(1,xdotool key super+" ++ show (n) ++ ")" ++ ws ++ "^ca()" |
-                            (i,ws) <- zip [1..] l,
-                           let n = i ]
---} 
 myWorkspaces :: [String]
 myWorkspaces = ["1:main", "2:web", "3:vim", "4:chat", "5:music", "6:other", "7:shed", "8:theatre", "9:crap"]
 
 -- Set border colours
---myFocusedBorderColor = "#aaffaa"
---myNormalBorderColor = "m#00cd00"
 myNormalBorderColor  = "#333333"
 myFocusedBorderColor = "#DD4814"
-
 myBorderWidth     = 2
-{-- 
-main = do
-    xmonad $ defaultConfig
-        { manageHook = manageHook' 
---        , layoutHook = avoidStruts $ layoutHook defaultConfig
-        , layoutHook = layoutHook'
-        , logHook = myLogHook dzenLeftBar >> fadeInactiveLogHook 0xdddddddd
---        , logHook = dynamicLogWithPP xmobarPP
---                        { ppOutput = hPutStrLn xmproc
---                        , ppTitle = xmobarColor "green" "" . shorten 50
---                        }
-        , workspaces  = myWorkspaces
-        , normalBorderColor  = myNormalBorderColor
-        , focusedBorderColor = myFocusedBorderColor
-        , borderWidth        = myBorderWidth
-        , modMask = mod4Mask -- Bind mod to win key
-        } `additionalKeys`
-        [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
-        , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
-        , ((0, xK_Print), spawn "scrot")
-        , ((0                     , 0x1008FF11), spawn "amixer set Master 2-")
-        , ((0                     , 0x1008FF13), spawn "amixer set Master 2+")
-        ]
---} 
+
 -- Run xmonad with the specified conifguration
 main = xmonad myConfig
 
@@ -112,8 +72,7 @@ myConfig = gnomeConfig {
     , ("C-M-S-l", shiftToNext )
     ]
 
--- Hooks {{{
--- ManageHook {{{
+-- Hooks
 manageHook' :: ManageHook
 manageHook' = (composeAll . concat $
     [ [resource     =? r            --> doIgnore            |   r   <- myIgnores] -- ignore desktop
@@ -158,40 +117,13 @@ myDoFullFloat :: ManageHook
 myDoFullFloat = doF W.focusDown <+> doFullFloat
 
 viewShift = doF . liftM2 (.) W.greedyView W.shift
--- }}}
 
 layoutHook'  =  onWorkspaces ["1:main","5:music"] customLayout $ 
                 onWorkspaces ["6:other"] gimpLayout $ 
                 onWorkspaces ["4:chat"] imLayout $
                 customLayout2
 
-{-- 
---Bar
-myLogHook :: Handle -> X ()
-myLogHook h = dynamicLogWithPP $ defaultPP
-    {
-        ppCurrent           =   dzenColor "#EE0404" "#4B4D4E" . pad . wrap "[" "]"
-    --  , ppVisible           =   dzenColor "white" "#1B1D1E" . pad
-      , ppVisible           =   dzenColor "#0404EE" "#4B4D4E" . pad 
-      , ppHidden            =   dzenColor "white" "#1B1D1E" . pad
-      , ppHiddenNoWindows   =   dzenColor "#7b7b7b" "#1B1D1E" . pad
-      , ppUrgent            =   dzenColor "#ff0000" "#1B1D1E" . pad
-      , ppWsSep             =   " "
-      , ppSep               =   "  |  "
-      , ppLayout            =   dzenColor "#ebac54" "#1B1D1E" .
-                                (\x -> case x of
-                                    "ResizableTall"             ->      "^i(" ++ myBitmapsDir ++ "/tall.xbm)"
-                                    "Mirror ResizableTall"      ->      "^i(" ++ myBitmapsDir ++ "/mtall.xbm)"
-                                    "Full"                      ->      "^i(" ++ myBitmapsDir ++ "/full.xbm)"
-                                    "Simple Float"              ->      "~"
-                                    _                           ->      x
-                                )
-      , ppTitle             =   (" " ++) . dzenColor "white" "#1B1D1E" . dzenEscape
-      , ppOutput            =   hPutStrLn h
-    }
- --}
-
--- Layout
+-- Layouts
 customLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
   where
     tiled   = ResizableTall 1 (2/100) (1/2) []
@@ -205,5 +137,3 @@ gimpLayout  = avoidStruts $ withIM (0.11) (Role "gimp-toolbox") $
               withIM (0.15) (Role "gimp-dock") Full
  
 imLayout    = avoidStruts $ withIM (1%5) (And (ClassName "Empathy") (Role "empathy-chat")) Grid 
- -- }}}
-
