@@ -16,24 +16,30 @@
 [submodule "vim/bundle/minibufexpl"]
 	path = vim/bundle/minibufexpl
 	url = git://github.com/fholgado/minibufexpl.vim.git
+    ignore = untracked
 [submodule "vim/bundle/snipmate"]
 	path = vim/bundle/snipmate
 	url = git://github.com/msanders/snipmate.vim.git
+    ignore = untracked
 [submodule "vim/bundle/xmledit"]
 	path = vim/bundle/xmledit
 	url = git://github.com/sukima/xmledit.git
+    ignore = untracked
 [submodule "vim/bundle/pyflakes-vim"]
 	path = vim/bundle/pyflakes-vim
 	url = git://github.com/kevinw/pyflakes-vim.git
 [submodule "vim/bundle/MatlabFilesEdition"]
 	path = vim/bundle/MatlabFilesEdition
 	url = git://github.com/vim-scripts/MatlabFilesEdition
+    ignore = untracked
 [submodule "vim/bundle/YankRing"]
 	path = vim/bundle/YankRing
 	url = git://github.com/vim-scripts/YankRing.vim.git
+    ignore = untracked
 [submodule "vim/bundle/bufexplorer"]
 	path = vim/bundle/bufexplorer
 	url = git://github.com/vim-scripts/bufexplorer.zip
+    ignore = untracked
 [submodule "vim/bundle/gundo.vim"]
 	path = vim/bundle/gundo.vim
 	url = git://github.com/sjl/gundo.vim.git
@@ -49,9 +55,11 @@
 [submodule "vim/bundle/FuzzyFinder"]
 	path = vim/bundle/FuzzyFinder
 	url = git://github.com/vim-scripts/FuzzyFinder.git
+    ignore = untracked
 [submodule "vim/bundle/L9"]
 	path = vim/bundle/L9
 	url = git://github.com/vim-scripts/L9
+    ignore = untracked
 [submodule "vim/bundle/puppet"]
 	path = vim/bundle/puppet
 	url = git://github.com/rodjek/vim-puppet.git
