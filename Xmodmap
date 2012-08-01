@@ -1,0 +1,17 @@
+!! ####################################
+!! MAP CAPS LOCK TO ESCAPE
+!! ####################################
+
+!! no caps lock
+  clear lock
+!! make caps_lock an escape key.
+  keycode 0x42 = Escape
+
+!! ####################################
+!! Remap caps lock back to caps lock 
+!! ####################################
+
+!!  xmodmap -e "keycode 0x42 = caps_lock"
+!!  xmodmap -e "add lock = caps_lock"
+
+
