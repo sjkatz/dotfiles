@@ -107,14 +107,10 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 
-#Ross add
+# My add
 alias lock='gnome-screensaver-command --lock'
  
-alias digital_='cd /home/ross/Documents/UCT\ 2012/EEE4084F\ -\ Digital\ Systems/'
-alias dsp_='cd /home/ross/Documents/UCT\ 2012/EEE4001F\ -\ Digital\ Signal\ Processing/'
-alias hub_='cd /home/ross/Documents/UCT\ 2012/HUB4045F\ -\ Medical\ Image\ Processing/'
-alias maint_='cd /home/ross/Documents/UCT\ 2012/MEC4054F\ -\ Maintanence/'
-alias broadb_='cd /home/ross/Documents/UCT\ 2012/EEE4087F\ -\ Mobile\ Broadband/'
+alias dissertation_='cd /home/shaun/Documents/Documents/Work/Masters/dissertation/'
 
 ###
 # Shortcuts to access git
