@@ -13,6 +13,7 @@ vim/doc/tags
 
 # Xmonad
 # Ignore the xmonad binary
+xmonad/xmonad-i386-linux
 xmonad/xmonad-x86_64-linux
 xmonad/xmonad.o
 xmonad/xmonad.hi
