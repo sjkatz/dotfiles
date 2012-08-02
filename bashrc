@@ -112,6 +112,8 @@ alias lock='gnome-screensaver-command --lock'
  
 alias dissertation_='cd /home/shaun/Documents/Work/Masters/dissertation/'
 
+alias ise_='/opt/Xilinx/14.1/ISE_DS/ISE/bin/lin64/ise &'
+
 ###
 # Shortcuts to access git
 alias g='git'
