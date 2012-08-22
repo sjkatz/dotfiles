@@ -1,5 +1,5 @@
 import XMonad
-import XMonad.Util.Run --(spawnPipe)
+import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig --(additionalKeys)
 import System.IO
 import XMonad.Config.Gnome
@@ -47,30 +47,6 @@ myWorkspaces = ["1:main", "2:web", "3:vim", "4:chat", "5:music", "6:other", "7:s
 myNormalBorderColor  = "#333333"
 myFocusedBorderColor = "#DD4814"
 myBorderWidth     = 2
-
--- Run xmonad with the specified conifguration
-main = xmonad myConfig
-
--- Use the gnomeConfig, but change a couple things
-myConfig = gnomeConfig {
-	manageHook = manageHook' 
-	, layoutHook = layoutHook'
-	, workspaces  = myWorkspaces
-	, normalBorderColor  = myNormalBorderColor
-	, focusedBorderColor = myFocusedBorderColor
-	, borderWidth        = myBorderWidth
-  , modMask = mod4Mask -- Bind mod to win key
-}`additionalKeysP` 
-    [
-    ("M-p", spawn "dmenu_run -b")
-  -- Logout
-    , ("M-S-q", spawn "gnome-session-quit") 
-  -- moving workspaces
-    , ("C-M-h",    prevWS )
-    , ("C-M-l",   nextWS )
-    , ("C-M-S-h",  shiftToPrev )
-    , ("C-M-S-l", shiftToNext )
-    ]
 
 -- Hooks
 manageHook' :: ManageHook
@@ -137,3 +113,32 @@ gimpLayout  = avoidStruts $ withIM (0.11) (Role "gimp-toolbox") $
               withIM (0.15) (Role "gimp-dock") Full
  
 imLayout    = avoidStruts $ withIM (1%5) (And (ClassName "Empathy") (Role "empathy-chat")) Grid 
+
+-- Run xmonad with the specified conifguration
+main = do
+    xmproc <- spawnPipe "xmobar"
+    xmonad $ defaultConfig 
+        {
+        manageHook = manageHook' 
+        , layoutHook = layoutHook'
+        , workspaces  = myWorkspaces
+        , logHook = dynamicLogWithPP xmobarPP
+                       { ppOutput = hPutStrLn xmproc
+                        , ppTitle = xmobarColor "green" "" . shorten 50
+                       }
+        , normalBorderColor  = myNormalBorderColor
+        , focusedBorderColor = myFocusedBorderColor
+        , borderWidth        = myBorderWidth
+        , modMask = mod4Mask -- Bind mod to win key
+        } `additionalKeysP` 
+        [
+        ("M-p", spawn "dmenu_run -b")
+      -- Logout
+    --    , ("M-S-q", spawn "gnome-session-quit") 
+      -- moving workspaces
+        , ("C-M-h",    prevWS )
+        , ("C-M-l",   nextWS )
+        , ("C-M-S-h",  shiftToPrev )
+        , ("C-M-S-l", shiftToNext )
+        ]
+        
