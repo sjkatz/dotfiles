@@ -2,11 +2,13 @@
 
 xrdb -merge .Xresources
 
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 15 --height 12 --transparent true --tint 0x000000 &
+trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 5 --height 17 --transparent true --alpha 0 --tint 0x000000 &
 
-#gnome-screensaver
-
+#gnome-screensaver 
 #gnome-settings-daemon
+
+# Fire up any apps
+xscreensaver -no-splash &
 
 #if [ -x /usr/bin/gnome-power-manager ] ; then
    #sleep 1
@@ -14,12 +16,11 @@ trayer --edge top --align right --SetDockType true --SetPartialStrut true --expa
 #fi
 
 if [ -x /usr/bin/nm-applet ] ; then
-   nm-applet --sm-disable &
+   (sleep 1; nm-applet --sm-disable &)
 fi
 
 #kmix --keepvisibility
-
-#feh --bg-scale /mnt/archivio/foto/2008-2009-dublino/2009-04-10-stefano/hapenny-desktop.jpg &
+feh --bg-scale /usr/share/backgrounds/The_Forbidden_City_by_Daniel_Mathis.jpg &
 
 chromium-browser --proxy-auto-detect &
 
