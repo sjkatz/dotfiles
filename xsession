@@ -19,6 +19,10 @@ if [ -x /usr/bin/nm-applet ] ; then
    (sleep 1; nm-applet --sm-disable &)
 fi
 
+eval $(gnome-keyring-daemon --start)
+export GNOME_KEYRING_SOCKET
+export GNOME_KEYRING_PID
+
 #kmix --keepvisibility
 feh --bg-scale /usr/share/backgrounds/The_Forbidden_City_by_Daniel_Mathis.jpg &
 
