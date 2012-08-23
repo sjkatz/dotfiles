@@ -94,25 +94,25 @@ myDoFullFloat = doF W.focusDown <+> doFullFloat
 
 viewShift = doF . liftM2 (.) W.greedyView W.shift
 
-layoutHook'  =  onWorkspaces ["1:main","5:music"] customLayout $ 
-                onWorkspaces ["6:other"] gimpLayout $ 
-                onWorkspaces ["4:chat"] imLayout $
-                customLayout2
+--layoutHook'  =  onWorkspaces ["1:main","5:music"] customLayout $ 
+--                onWorkspaces ["6:other"] gimpLayout $ 
+--                onWorkspaces ["4:chat"] imLayout $
+--                customLayout2
 
 -- Layouts
-customLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
-  where
-    tiled   = ResizableTall 1 (2/100) (1/2) []
+--customLayout = avoidStruts $ tiled ||| Mirror tiled ||| Full ||| simpleFloat
+--  where
+--    tiled   = ResizableTall 1 (2/100) (1/2) []
  
-customLayout2 = avoidStruts $ Full ||| tiled ||| Mirror tiled ||| simpleFloat 
-  where
-    tiled   = ResizableTall 1 (2/100) (1/2) []
+--customLayout2 = avoidStruts $ Full ||| tiled ||| Mirror tiled ||| simpleFloat 
+--  where
+--    tiled   = ResizableTall 1 (2/100) (1/2) []
  
-gimpLayout  = avoidStruts $ withIM (0.11) (Role "gimp-toolbox") $
-              reflectHoriz $
-              withIM (0.15) (Role "gimp-dock") Full
+--gimpLayout  = avoidStruts $ withIM (0.11) (Role "gimp-toolbox") $
+--              reflectHoriz $
+--              withIM (0.15) (Role "gimp-dock") Full
  
-imLayout    = avoidStruts $ withIM (1%5) (And (ClassName "Empathy") (Role "empathy-chat")) Grid 
+--imLayout    = avoidStruts $ withIM (1%5) (And (ClassName "Empathy") (Role "empathy-chat")) Grid 
 
 -- Run xmonad with the specified conifguration
 main = do
@@ -120,11 +120,13 @@ main = do
     xmonad $ defaultConfig 
         {
         manageHook = manageHook' 
-        , layoutHook = layoutHook'
+--        , layoutHook = layoutHook'
+        , layoutHook = avoidStruts $ layoutHook defaultConfig
         , workspaces  = myWorkspaces
         , logHook = dynamicLogWithPP xmobarPP
                        { ppOutput = hPutStrLn xmproc
-                        , ppTitle = xmobarColor "green" "" . shorten 50
+                        , ppCurrent = xmobarColor "orange" "" . wrap "[" "]" 
+                        , ppTitle = xmobarColor "orange" "" . shorten 50
                        }
         , normalBorderColor  = myNormalBorderColor
         , focusedBorderColor = myFocusedBorderColor
@@ -132,7 +134,7 @@ main = do
         , modMask = mod4Mask -- Bind mod to win key
         } `additionalKeysP` 
         [
-        ("M-p", spawn "dmenu_run -b")
+        ("M-p", spawn "dmenu_run -b -nb black -nf white -sb black -sf orange")
       -- Logout
     --    , ("M-S-q", spawn "gnome-session-quit") 
       -- moving workspaces
