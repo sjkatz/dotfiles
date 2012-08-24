@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Link to resources
+bash .xrandr_run
 xrdb -merge .Xresources
 
 # Setup Trayer
@@ -12,11 +13,11 @@ gnome-screensaver &
 #gnome-settings-daemon &
 #gnome-session 
 
- Run Power Manager
-if [ -x /usr/bin/gnome-power-manager ] ; then
-   sleep 1
-   gnome-power-manager &
-fi
+# Run Power Manager
+#if [ -x /usr/bin/gnome-power-manager ] ; then
+#   sleep 1
+#   gnome-power-manager &
+#fi
 
 # Run Network Manager
 if [ -x /usr/bin/nm-applet ] ; then
