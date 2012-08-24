@@ -108,6 +108,7 @@ fi
 
 
 # My add
+alias nau='nautilus --no-desktop &'
 alias lock='gnome-screensaver-command --lock'
  
 alias dissertation_='cd /home/shaun/Documents/Work/Masters/dissertation/'

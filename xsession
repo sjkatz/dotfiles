@@ -4,22 +4,28 @@
 xrdb -merge .Xresources
 
 # Setup Trayer
-trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 5 --height 17 --transparent true --alpha 0 --tint 0x000000 &
+trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 10 --height 17 --transparent false --alpha 0 --tint 0x000000 &
 
 # Fire up any apps
-xscreensaver -no-splash &
-#gnome-screensaver 
-#gnome-settings-daemon
+#xscreensaver -no-splash &
+gnome-screensaver &
+#gnome-settings-daemon &
+#gnome-session 
 
-# Run Power Manager
-#if [ -x /usr/bin/gnome-power-manager ] ; then
-   #sleep 1
-   #gnome-power-manager
-#fi
+ Run Power Manager
+if [ -x /usr/bin/gnome-power-manager ] ; then
+   sleep 1
+   gnome-power-manager &
+fi
 
 # Run Network Manager
 if [ -x /usr/bin/nm-applet ] ; then
    (sleep 1; nm-applet --sm-disable &)
+fi
+
+if [ -x /usr/bin/nm-applet ] ; then
+   sleep 1
+   gnome-sound-applet &
 fi
 
 # Handle Gnome KeyRing
