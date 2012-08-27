@@ -3,22 +3,17 @@ Config { font = "-misc-fixed-*-*-*-*-13-*-*-*-*-*-*-*"
        , fgColor = "grey"
        , position = TopW L 90
        , commands = [ Run Network "eth1" ["-L","0","-H","32","--normal","green","--high","red"] 10
-                    , Run Wireless "wlan0" ["-L", "33", "-H", "66", "--low", "red", "--high", "green"] 10
+                    , Run Network "wlan0" ["-L","0","-H","32","--normal","green","--high","red"] 10
                     , Run Cpu ["-L","15","-H","50","--normal","green","--high","red"] 10
-                    , Run Battery ["-t", "<acstatus><left>%",
-                                   "-L", "10", "-H", "80",
-                                   "-l", "red", "-n", "blue", "-h", "green",
-                                   "--",
-                                   "-O", "<fc=green>+</fc>", "-o", "<fc=red>-</fc>",
-                                   "-f", "status",
-                                   "-c", "energy_full"
-                                  ] 10
+                    , Run Battery ["-t", "Batt: <acstatus><left>% (<timeleft>)",
+                      "-L", "10", "-H", "80", "-p", "3",
+                       "-l", "red", "-n", "blue", "-h", "grey",
+                       "--", "-O", "+", "-o", "-"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10 
-                    , Run Swap [] 10
                     , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %eth1% - %wlan0wi% | %battery% | <fc=orange>%date%</fc>"
-       }
+       , template = "%StdinReader% }{ %cpu% | %memory% | %eth1% - %wlan0% | %battery% | <fc=orange>%date%</fc>"
+}
