@@ -8,8 +8,8 @@ xrdb -merge .Xresources
 trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 10 --height 17 --transparent false --alpha 0 --tint 0x000000 &
 
 # Fire up any apps
-#xscreensaver -no-splash &
-gnome-screensaver &
+xscreensaver -no-splash &
+#gnome-screensaver &
 #gnome-settings-daemon &
 #gnome-session 
 
