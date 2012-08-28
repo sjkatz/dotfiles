@@ -5,7 +5,7 @@ vim/undodir/*
 # Ignore vim/doc/tags
 vim/doc/tags
 
-.netrwhist
+vim/.netrwhist
 *.swp
 *~
 
