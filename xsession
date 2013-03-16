@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Link to resources
-bash .xrandr_run
+#bash .xrandr_run
 xrdb -merge .Xresources
 
 # Setup Trayer
@@ -10,22 +10,22 @@ trayer --edge top --align right --SetDockType true --SetPartialStrut false --exp
 # Fire up any apps
 xscreensaver -no-splash &
 #gnome-screensaver &
-#gnome-settings-daemon &
+gnome-settings-daemon &
 #gnome-session 
 
 # Run Power Manager
-#if [ -x /usr/bin/gnome-power-manager ] ; then
+if [ -x /usr/bin/gnome-power-manager ] ; then
 #   sleep 1
-#   gnome-power-manager &
-#fi
+   gnome-power-manager &
+fi
 
 # Run Network Manager
 if [ -x /usr/bin/nm-applet ] ; then
-   (sleep 1; nm-applet --sm-disable &)
+    (sleep 1; nm-applet --sm-disable &)
 fi
 
-if [ -x /usr/bin/nm-applet ] ; then
-   sleep 1
+if [ -x /usr/bin/gnome-sound-applet ] ; then
+#   sleep 1
    gnome-sound-applet &
 fi
 

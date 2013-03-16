@@ -38,6 +38,9 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import Control.Monad (liftM2)
 
+import XMonad.Prompt
+import XMonad.Prompt.Shell
+
 -- Start config
 
 myWorkspaces :: [String]
@@ -134,7 +137,8 @@ main = do
         , modMask = mod4Mask -- Bind mod to win key
         } `additionalKeysP` 
         [
-        ("M-p", spawn "dmenu_run -b -nb black -nf white -sb black -sf orange")
+        ("M-s", spawn "dmenu_run -b -nb black -nf white -sb black -sf orange")
+        ,("M-p", shellPrompt defaultXPConfig)
       -- Logout
     --    , ("M-S-q", spawn "gnome-session-quit") 
       -- moving workspaces
